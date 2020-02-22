@@ -3,6 +3,7 @@
 import json
 import csv
 import os
+import datetime
 
 from dotenv import load_dotenv
 import requests
@@ -25,7 +26,7 @@ api_key = os.environ.get("ALPHAVANTAGE_API_KEY")
 print("api_key is:")
 print(api_key)
 
-symbol = "MSFT"
+symbol = input("Please input ticker: ")
 request_url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={symbol}&apikey={api_key}"
 response  = requests.get(request_url)
 
@@ -93,12 +94,13 @@ with open(csv_file_path, "w") as csv_file: # "w" means "open the file for writin
     
 
 
+now = datetime.datetime.now()
 
 print("-------------------------")
-print("SELECTED SYMBOL: XYZ")
+print(f"SELECTED SYMBOL: {symbol}")
 print("-------------------------")
 print("REQUESTING STOCK MARKET DATA...")
-print("REQUEST AT: 2018-02-20 02:00pm")
+print("REQUEST AT: " + now.strftime("%Y-%m-%d %I:%M %p"))
 print("-------------------------")
 print(f"LATEST DAY: {last_refreshed}")
 print(f"LATEST CLOSE: {to_usd(float(latest_closing))}")
