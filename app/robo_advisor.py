@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 import requests
 
 
+
 load_dotenv() #> loads contents of the .env file into the script's environment
 
 def to_usd(my_price):
@@ -26,16 +27,30 @@ api_key = os.environ.get("ALPHAVANTAGE_API_KEY")
 print("api_key is:")
 print(api_key)
 
-symbol = input("Please input ticker: ")
+
+#input validation:
+
+while True:
+    
+    symbol = input("Please input a ticker: ")
+    symbol = symbol.upper()
+
+    if len(symbol) > 6:
+        print("Invalid entry. Please try again")
+    elif type(symbol) == float or type(symbol) == int:
+        print("Invalid entry. Please try again")
+
+    else:
+        break
+
+
+
 request_url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={symbol}&apikey={api_key}"
 response  = requests.get(request_url)
 
-
 parsed_response = json.loads(response.text)
 
-
 last_refreshed = parsed_response["Meta Data"]["3. Last Refreshed"]
-
 
 tsd = parsed_response["Time Series (Daily)"]
 
@@ -43,9 +58,6 @@ tsd = parsed_response["Time Series (Daily)"]
 dates = list(tsd.keys())
 
 latest_day = dates[0] #maybe sort dates later
-
-
-#breakpoint()
 
 
 latest_closing = tsd[latest_day]["4. close"]
@@ -61,14 +73,7 @@ for date in dates:
 
 recent_high = max(high_prices)
 recent_low = min(low_prices)
-
-
-    
-
-
 recent_high = max(high_prices)
-
-
 
  
 csv_file_path = os.path.join(os.path.dirname(__file__), "..", "data", "prices.csv")
@@ -93,6 +98,20 @@ with open(csv_file_path, "w") as csv_file: # "w" means "open the file for writin
         })
     
 
+#recommendation
+
+rec = str
+
+reason = str
+
+
+if float(recent_low)/float(latest_closing) >= 0.8:
+    rec = "Buy"
+    reason = "The stock is most likely undervalued." #provi
+else:
+    rec = "Sell"
+    reason = "The stock is most likely overvalued." #provide some more explanation
+
 
 now = datetime.datetime.now()
 
@@ -107,8 +126,8 @@ print(f"LATEST CLOSE: {to_usd(float(latest_closing))}")
 print(f"RECENT HIGH: {to_usd(float(recent_high))}")
 print(f"RECENT LOW: {to_usd(float(recent_low))}")
 print("-------------------------")
-print("RECOMMENDATION: BUY!")
-print("RECOMMENDATION REASON: TODO")
+print(f"RECOMMENDATION: {rec}")
+print(f"RECOMMENDATION REASON: {reason}")
 print("-------------------------")
 print(f"WRITING DATA TO CSV: {csv_file_path}")
 print("-------------------------")
