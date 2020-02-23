@@ -23,6 +23,22 @@ def to_usd(my_price):
     return f"${my_price:,.2f}" #> $12,000.71
 
 
+def is_number(s): #taken from: https://www.pythoncentral.io/how-to-check-if-a-string-is-a-number-in-python-including-unicode/
+    try:
+        float(s)
+        return True
+    except ValueError:
+        pass
+ 
+    try:
+        import unicodedata
+        unicodedata.numeric(s)
+        return True
+    except (TypeError, ValueError):
+        pass
+    return False
+
+
 api_key = os.environ.get("ALPHAVANTAGE_API_KEY")
 print("api_key is:")
 print(api_key)
@@ -36,10 +52,9 @@ while True:
     symbol = symbol.upper()
 
     if len(symbol) > 6:
-        print("Invalid entry. Please try again")
-    elif type(symbol) == float or type(symbol) == int:
-        print("Invalid entry. Please try again")
-
+        print("Invalid entry. Stock ticker have a maximum of 6 characters. Please try again")
+    elif is_number(symbol) == True:
+        print("Invalid entry. Stock ticker cannot be a number. Please try again")
     else:
         break
 
@@ -97,13 +112,10 @@ with open(csv_file_path, "w") as csv_file: # "w" means "open the file for writin
         "volume": daily_prices["5. volume"]
         })
     
-
 #recommendation
 
 rec = str
-
 reason = str
-
 
 if float(recent_low)/float(latest_closing) >= 0.8:
     rec = "Buy"
