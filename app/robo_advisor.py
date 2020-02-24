@@ -64,8 +64,7 @@ while True:
 
 
 
-
-request_url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={symbol}&apikey={api_key}"
+request_url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={symbol}&outputsize=full&apikey={api_key}"
 response  = requests.get(request_url)
 
 parsed_response = json.loads(response.text)
@@ -91,10 +90,13 @@ for date in dates:
     low_price = tsd[date]["3. low"]
     low_prices.append(float((low_price)))
 
-recent_high = max(high_prices)
-recent_low = min(low_prices)
-recent_high = max(high_prices)
+recent_high = max(high_prices[0:100])
+year_high = max(high_prices[0:252])
+recent_low = min(low_prices[0:100])
+year_low = min(low_prices[0:252])
 
+
+print(high_prices[0:15])
  
 csv_file_path = os.path.join(os.path.dirname(__file__), "..", "data", "prices.csv")
 
@@ -141,7 +143,9 @@ print("-------------------------")
 print(f"LATEST DAY: {last_refreshed}")
 print(f"LATEST CLOSE: {to_usd(float(latest_closing))}")
 print(f"RECENT HIGH: {to_usd(float(recent_high))}")
+print(f"YEAR HIGH: {to_usd(float(year_high))}")
 print(f"RECENT LOW: {to_usd(float(recent_low))}")
+print(f"YEAR LOW: {to_usd(float(year_low))}")
 print("-------------------------")
 print(f"RECOMMENDATION: {rec}")
 print(f"RECOMMENDATION REASON: {reason}")
