@@ -53,25 +53,31 @@ while True:
     symbol = symbol.upper()
 
     
-    if len(symbol) > 6:
-        print("Invalid entry. Stock ticker have a maximum of 6 characters. Please try again")
-    elif is_number(symbol) == True:
-        print("Invalid entry. Stock ticker cannot be a number. Please try again")
-    else:
+    #if len(symbol) > 6:
+        #print("Invalid entry. Stock ticker have a maximum of 6 characters. Please try again")
+    #elif is_number(symbol) == True:
+        #print("Invalid entry. Stock ticker cannot be a number. Please try again")
+    #else:
+        #break
+
+
+    request_url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={symbol}&outputsize=full&apikey={api_key}"
+    response  = requests.get(request_url)
+
+    parsed_response = json.loads(response.text)
+
+
+    try:
+        last_refreshed = parsed_response["Meta Data"]["3. Last Refreshed"]
         break
-
-
-
-
-
-request_url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={symbol}&outputsize=full&apikey={api_key}"
-response  = requests.get(request_url)
-
-parsed_response = json.loads(response.text)
-
-last_refreshed = parsed_response["Meta Data"]["3. Last Refreshed"]
+    except:
+        print("Your ticker is invalid. Please try again.")
+        
 
 tsd = parsed_response["Time Series (Daily)"]
+
+
+####gfighsojfdgo
 
 
 dates = list(tsd.keys())
