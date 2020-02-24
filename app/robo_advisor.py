@@ -40,23 +40,27 @@ def is_number(s): #taken from: https://www.pythoncentral.io/how-to-check-if-a-st
 
 
 api_key = os.environ.get("ALPHAVANTAGE_API_KEY")
-print("api_key is:")
-print(api_key)
 
 
 #input validation:
 
 while True:
     
+
+
     symbol = input("Please input a ticker: ")
     symbol = symbol.upper()
 
+    
     if len(symbol) > 6:
         print("Invalid entry. Stock ticker have a maximum of 6 characters. Please try again")
     elif is_number(symbol) == True:
         print("Invalid entry. Stock ticker cannot be a number. Please try again")
     else:
         break
+
+
+
 
 
 
