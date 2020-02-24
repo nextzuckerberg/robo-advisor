@@ -40,38 +40,45 @@ def is_number(s): #taken from: https://www.pythoncentral.io/how-to-check-if-a-st
     return False
 
 
+def hasNumbers(inputString): #taken from https://stackoverflow.com/questions/19859282/check-if-a-string-contains-a-number
+    return any(char.isdigit() for char in inputString)
+
 api_key = os.environ.get("ALPHAVANTAGE_API_KEY")
 
 
 #input validation:
 
+
+
+
 while True:
     
 
 
-    symbol = input("Please input a ticker: ")
+    symbol = input("Please input a stock symbol: ")
     symbol = symbol.upper()
 
+
     
-    #if len(symbol) > 6:
-        #print("Invalid entry. Stock ticker have a maximum of 6 characters. Please try again")
-    #elif is_number(symbol) == True:
-        #print("Invalid entry. Stock ticker cannot be a number. Please try again")
-    #else:
-        #break
-
-
-    request_url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={symbol}&outputsize=full&apikey={api_key}"
-    response  = requests.get(request_url)
-
-    parsed_response = json.loads(response.text)
-
-
-    try:
-        last_refreshed = parsed_response["Meta Data"]["3. Last Refreshed"]
+    if hasNumbers(symbol) == True:
+        print("Invalid entry. Stock symbol cannot contain a number. Please try again")
+    else:
         break
-    except:
-        print("Your ticker is invalid. Please try again.")
+
+
+request_url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={symbol}&outputsize=full&apikey={api_key}"
+response  = requests.get(request_url)
+
+
+if "Error Message" in response.text:
+    print("Sorry, symbol not found. Please try running the application again with a valid symbol.")
+    exit()
+
+parsed_response = json.loads(response.text)
+
+
+    
+last_refreshed = parsed_response["Meta Data"]["3. Last Refreshed"]
         
 
 tsd = parsed_response["Time Series (Daily)"]
@@ -132,10 +139,10 @@ reason = str
 
 if float(recent_low)/float(latest_closing) >= 0.8:
     rec = "Buy"
-    reason = "The stock is most likely undervalued." #provi
+    reason = "The stock is most likely undervalued. This is because the latest close price is 20% or closer from the recent low." #provi
 else:
     rec = "Sell"
-    reason = "The stock is most likely overvalued." #provide some more explanation
+    reason = "The stock is most likely overvalued. This is because the latest close price is more than 20% away from the recent low." #provide some more explanation
 
 
 now = datetime.datetime.now()
@@ -165,14 +172,30 @@ print("-------------------------")
 #The graphs taken from: https://plot.ly/python/plot-data-from-csv/
 
 
-df = pd.read_csv(csv_file_path)
 
-fig = go.Figure(go.Scatter(x = df['timestamp'], y = df['close'],
-                  name='Share Prices (in USD)'))
 
-fig.update_layout(title= symbol + ' Prices over time',
-                   plot_bgcolor='rgb(230, 230,230)',
-                   showlegend=True)
+while True:
 
-fig.show()
+    graphoption = input("Would you like to see the graph for your selected stock? Write 'Yes' or 'No'")
+
+    graphoption = graphoption.lower().title()
+
+    if graphoption == "Yes":
+        df = pd.read_csv(csv_file_path)
+
+        fig = go.Figure(go.Scatter(x = df['timestamp'], y = df['close'],
+                        name='Share Prices (in USD)'))
+
+        fig.update_layout(title= symbol + ' Prices over time',
+                        plot_bgcolor='rgb(230, 230,230)',
+                        showlegend=True)
+
+        fig.show()
+        break
+    elif graphoption == "No":
+        print("Thank you for using my program!")
+        break
+    else:
+        print("Please enter a valid id.")
+
 
