@@ -8,7 +8,8 @@ import datetime
 from dotenv import load_dotenv
 import requests
 
-
+import pandas as pd
+import plotly.graph_objects as go
 
 load_dotenv() #> loads contents of the .env file into the script's environment
 
@@ -151,5 +152,17 @@ print("HAPPY INVESTING!")
 print("-------------------------")
 
 
+#The graphs taken from: https://plot.ly/python/plot-data-from-csv/
 
+
+df = pd.read_csv(csv_file_path)
+
+fig = go.Figure(go.Scatter(x = df['timestamp'], y = df['close'],
+                  name='Share Prices (in USD)'))
+
+fig.update_layout(title= symbol + ' Prices over time',
+                   plot_bgcolor='rgb(230, 230,230)',
+                   showlegend=True)
+
+fig.show()
 
