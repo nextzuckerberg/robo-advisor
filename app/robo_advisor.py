@@ -24,20 +24,21 @@ def to_usd(my_price):
     return f"${my_price:,.2f}" #> $12,000.71
 
 
-def is_number(s): #taken from: https://www.pythoncentral.io/how-to-check-if-a-string-is-a-number-in-python-including-unicode/
-    try:
-        float(s)
-        return True
-    except ValueError:
-        pass
+#def is_number(s): #taken from: https://www.pythoncentral.io/how-to-check-if-a-string-is-a-number-in-python-including-unicode/
+    #try:
+        #float(s)
+        #return True
+    
+    #except ValueError:
+        #pass
  
-    try:
-        import unicodedata
-        unicodedata.numeric(s)
-        return True
-    except (TypeError, ValueError):
-        pass
-    return False
+    #try:
+        #import unicodedata
+        #unicodedata.numeric(s)
+        #return True
+    #except (TypeError, ValueError):
+        #pass
+    #return False
 
 
 def hasNumbers(inputString): #taken from https://stackoverflow.com/questions/19859282/check-if-a-string-contains-a-number
@@ -49,11 +50,8 @@ api_key = os.environ.get("ALPHAVANTAGE_API_KEY")
 #input validation:
 
 
-
-
 while True:
     
-
 
     symbol = input("Please input a stock symbol: ")
     symbol = symbol.upper()
@@ -61,7 +59,7 @@ while True:
 
     
     if hasNumbers(symbol) == True:
-        print("Invalid entry. Stock symbol cannot contain a number. Please try again")
+        print("Invalid entry. Stock symbol cannot contain a number. Please try again.")
     else:
         break
 
@@ -76,15 +74,12 @@ if "Error Message" in response.text:
 
 parsed_response = json.loads(response.text)
 
-
     
 last_refreshed = parsed_response["Meta Data"]["3. Last Refreshed"]
         
 
 tsd = parsed_response["Time Series (Daily)"]
 
-
-####gfighsojfdgo
 
 
 dates = list(tsd.keys())
@@ -173,7 +168,7 @@ print("-------------------------")
 
 while True:
 
-    graphoption = input("Would you like to see the graph for your selected stock? Write 'Yes' or 'No'")
+    graphoption = input("Would you like to see the graph for your selected stock? Write 'Yes' or 'No'.")
 
     graphoption = graphoption.lower().title()
 
@@ -196,6 +191,7 @@ while True:
         break
     else:
         print("Please enter a valid id.")
+
 
 print("HAPPY INVESTING!")
 print("-------------------------")
