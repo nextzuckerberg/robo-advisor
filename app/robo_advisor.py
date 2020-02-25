@@ -179,7 +179,7 @@ while True:
         fig = go.Figure(go.Scatter(x = df['timestamp'], y = df['close'],
                         name='Share Prices (in USD)'))
 
-        fig.update_layout(title= symbol + ' Prices over time',
+        fig.update_layout(title= symbol + ' Prices over time (since the first trading day available)',
                         plot_bgcolor='rgb(230, 230,230)',
                         showlegend=True)
         
