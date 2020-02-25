@@ -31,8 +31,7 @@ To run the script, type the following in the command line:
 python app/robo_advisor.py
 ```
 
-No you should be able to enter the ids of the selected products.
-Once you are done, type "Done"
-The script will return the receipt including all the selected items
+No you should be able to enter a stock ticker. 
+The program will return the latest close price, 52 week high, 52 week low, and recommendation. Also, if you want to the program will return the graph with the stock prices over time.
 
-if you have any questions regarding the application, please contact me at grocery@piedpiper.edu
+if you have any questions regarding the application, please contact me at stocks@wallstreet.edu
