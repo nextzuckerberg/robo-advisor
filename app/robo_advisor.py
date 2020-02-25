@@ -109,7 +109,7 @@ recent_low = min(low_prices[0:100])
 year_low = min(low_prices[0:252])
 
 
-print(high_prices[0:15])
+
  
 csv_file_path = os.path.join(os.path.dirname(__file__), "..", "data", "prices.csv")
 
@@ -137,12 +137,12 @@ with open(csv_file_path, "w") as csv_file: # "w" means "open the file for writin
 rec = str
 reason = str
 
-if float(recent_low)/float(latest_closing) >= 0.8:
+if float(year_low)/float(latest_closing) >= 0.8:
     rec = "Buy"
-    reason = "The stock is most likely undervalued. This is because the latest close price is 20% or closer from the recent low." #provi
+    reason = "The stock is most likely undervalued. This is because the latest close price is 20% or closer from the 52 week low." #provi
 else:
     rec = "Sell"
-    reason = "The stock is most likely overvalued. This is because the latest close price is more than 20% away from the recent low." #provide some more explanation
+    reason = "The stock is most likely overvalued. This is because the latest close price is more than 20% away from the 52 week low." #provide some more explanation
 
 
 now = datetime.datetime.now()
@@ -155,23 +155,20 @@ print("REQUEST AT: " + now.strftime("%Y-%m-%d %I:%M %p"))
 print("-------------------------")
 print(f"LATEST DAY: {last_refreshed}")
 print(f"LATEST CLOSE: {to_usd(float(latest_closing))}")
-print(f"RECENT HIGH: {to_usd(float(recent_high))}")
-print(f"YEAR HIGH: {to_usd(float(year_high))}")
-print(f"RECENT LOW: {to_usd(float(recent_low))}")
-print(f"YEAR LOW: {to_usd(float(year_low))}")
+#print(f"RECENT HIGH: {to_usd(float(recent_high))}")
+print(f"52 WEEK HIGH: {to_usd(float(year_high))}")
+#print(f"RECENT LOW: {to_usd(float(recent_low))}")
+print(f"52 WEEK LOW: {to_usd(float(year_low))}")
 print("-------------------------")
 print(f"RECOMMENDATION: {rec}")
 print(f"RECOMMENDATION REASON: {reason}")
 print("-------------------------")
-print(f"WRITING DATA TO CSV: {csv_file_path}")
+print(f"WRITING DATA TO CSV: {os.path.abspath(csv_file_path)}")
 print("-------------------------")
-print("HAPPY INVESTING!")
-print("-------------------------")
+
 
 
 #The graphs taken from: https://plot.ly/python/plot-data-from-csv/
-
-
 
 
 while True:
@@ -181,6 +178,7 @@ while True:
     graphoption = graphoption.lower().title()
 
     if graphoption == "Yes":
+        print("You should see the graph in your browser. Thank you for using my program!")
         df = pd.read_csv(csv_file_path)
 
         fig = go.Figure(go.Scatter(x = df['timestamp'], y = df['close'],
@@ -189,6 +187,7 @@ while True:
         fig.update_layout(title= symbol + ' Prices over time',
                         plot_bgcolor='rgb(230, 230,230)',
                         showlegend=True)
+        
 
         fig.show()
         break
@@ -198,4 +197,5 @@ while True:
     else:
         print("Please enter a valid id.")
 
-
+print("HAPPY INVESTING!")
+print("-------------------------")
