@@ -3,7 +3,7 @@ import pytest
 
 
 
-from app.robo_advisor import to_usd, hasNumbers, response, write_to_csv
+from app.robo_advisor import to_usd, hasNumbers, response, write_to_csv, reccommendation, reasoning
 
 
 
@@ -75,3 +75,12 @@ def test_write_to_csv():
     assert result == True
     assert os.path.isfile(csv_filepath) == True
     # TODO: consider also testing the file contents!
+
+
+def test_reccommendation():
+    assert reccommendation(10,11) == "Buy"
+    assert reccommendation(10,30) == "Sell"
+
+def test_reasoning():
+    assert reasoning("Buy") == "The stock is most likely undervalued. This is because the latest close price is 20% or closer from the 52 week low."
+    assert reasoning("Sell") == "The stock is most likely overvalued. This is because the latest close price is more than 20% away from the 52 week low."

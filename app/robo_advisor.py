@@ -30,7 +30,6 @@ def hasNumbers(inputString): #function checks if s string contains some digits t
 def divider():
     return "-------------------"
 
-
 def response(ticker):
     request_url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={ticker}&apikey={api_key}"
     response  = requests.get(request_url)
@@ -69,7 +68,26 @@ def write_to_csv(rows, csv_file_path):
             writer.writerow(row)
     return True
                     
-   
+def reccommendation(recent_low, latest_closing):
+
+    rec = str
+      
+    if float(recent_low)/float(latest_closing) >= 0.8:
+        rec = "Buy"
+    else:
+        rec = "Sell"
+    return rec
+
+def reasoning(rec):
+    reason = str
+
+    if rec == "Buy":
+        reason = "The stock is most likely undervalued. This is because the latest close price is 20% or closer from the 52 week low."
+    else:
+        reason = "The stock is most likely overvalued. This is because the latest close price is more than 20% away from the 52 week low."
+    return reason
+
+
 api_key = os.environ.get("ALPHAVANTAGE_API_KEY")
     
 
@@ -107,16 +125,21 @@ if __name__ == "__main__":
         
     #recommendation
 
-    rec = str
-    reason = str
+    #rec = str
+    #reason = str
 
-    if float(recent_low)/float(latest_closing) >= 0.8:
-        rec = "Buy"
-        reason = "The stock is most likely undervalued. This is because the latest close price is 20% or closer from the 52 week low." #provi
-    else:
-        rec = "Sell"
-        reason = "The stock is most likely overvalued. This is because the latest close price is more than 20% away from the 52 week low." #provide some more explanation
 
+    reccommendation(recent_low,latest_closing)
+    reasoning(reccommendation)
+
+    #if float(recent_low)/float(latest_closing) >= 0.8:
+        #rec = "Buy"
+        #reason = "The stock is most likely undervalued. This is because the latest close price is 20% or closer from the 52 week low." #provi
+    #else:
+        #rec = "Sell"
+        #reason = "The stock is most likely overvalued. This is because the latest close price is more than 20% away from the 52 week low." #provide some more explanation
+
+    
 
     now = datetime.datetime.now()
 
@@ -131,8 +154,8 @@ if __name__ == "__main__":
     print(f"RECENT HIGH: {to_usd(float(recent_high))}")
     print(f"RECENT LOW: {to_usd(float(recent_low))}")
     print(divider())
-    print(f"RECOMMENDATION: {rec}")
-    print(f"RECOMMENDATION REASON: {reason}")
+    print(f"RECOMMENDATION: {reccommendation(recent_low,latest_closing)}")
+    print(f"RECOMMENDATION REASON: {reasoning(reccommendation)}")
     print(divider())
     print(f"WRITING DATA TO CSV: {os.path.abspath(csv_file_path)}")
     print(divider())
