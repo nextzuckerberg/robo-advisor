@@ -69,9 +69,7 @@ def write_to_csv(rows, csv_file_path):
     return True
                     
 def reccommendation(recent_low, latest_closing):
-
     rec = str
-      
     if float(recent_low)/float(latest_closing) >= 0.8:
         rec = "Buy"
     else:
@@ -80,17 +78,14 @@ def reccommendation(recent_low, latest_closing):
 
 def reasoning(rec):
     reason = str
-
     if rec == "Buy":
         reason = "The stock is most likely undervalued. This is because the latest close price is 20% or closer from the 52 week low."
     else:
         reason = "The stock is most likely overvalued. This is because the latest close price is more than 20% away from the 52 week low."
     return reason
 
-
 api_key = os.environ.get("ALPHAVANTAGE_API_KEY")
     
-
 #input validation:
 
 if __name__ == "__main__":
@@ -124,22 +119,7 @@ if __name__ == "__main__":
     write_to_csv(rows, csv_file_path)
         
     #recommendation
-
-    #rec = str
-    #reason = str
-
-
-    reccommendation(recent_low,latest_closing)
-    reasoning(reccommendation)
-
-    #if float(recent_low)/float(latest_closing) >= 0.8:
-        #rec = "Buy"
-        #reason = "The stock is most likely undervalued. This is because the latest close price is 20% or closer from the 52 week low." #provi
-    #else:
-        #rec = "Sell"
-        #reason = "The stock is most likely overvalued. This is because the latest close price is more than 20% away from the 52 week low." #provide some more explanation
-
-    
+ 
 
     now = datetime.datetime.now()
 
