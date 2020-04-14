@@ -23,14 +23,49 @@ def to_usd(my_price):
     """
     return f"${my_price:,.2f}" #> $12,000.71
 
-def hasNumbers(inputString): #taken from https://stackoverflow.com/questions/19859282/check-if-a-string-contains-a-number
+def hasNumbers(inputString): #function checks if s string contains some digits taken from https://stackoverflow.com/questions/19859282/check-if-a-string-contains-a-number
     return any(char.isdigit() for char in inputString)
 
-api_key = os.environ.get("ALPHAVANTAGE_API_KEY")
+#simple function to make sure dividers are of equal length
+def divider():
+    return "-------------------"
 
+
+def response(ticker):
+    request_url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={ticker}&outputsize=full&apikey={api_key}"
+    response  = requests.get(request_url)
+    error(response)
+    parsed_response = json.loads(response.text)
+    return parsed_response
+
+def error(response):
+    if "Error Message" in response.text:
+        print("Sorry, symbol not found. Please try running the application again with a valid symbol.")
+        exit()    
+
+def write_to_csv(dates, csv_file_path):
+    csv_headers = ["timestamp", "open", "high", "low", "close", "volume"]
+    with open(csv_file_path, "w") as csv_file: # "w" means "open the file for writing"
+            writer = csv.DictWriter(csv_file, fieldnames=csv_headers)
+            writer.writeheader() # uses fieldnames set above
+
+            for date in dates:
+                daily_prices = tsd[date]
+
+                writer.writerow({
+                
+                "timestamp": date,
+                "open": daily_prices["1. open"],
+                "high": daily_prices["2. high"],
+                "low": daily_prices["3. low"],
+                "close": daily_prices["4. close"],
+                "volume": daily_prices["5. volume"]
+                })
+   
+api_key = os.environ.get("ALPHAVANTAGE_API_KEY")
+    
 
 #input validation:
-
 
 if __name__ == "__main__":
 
@@ -45,17 +80,8 @@ if __name__ == "__main__":
             break
 
 
-    request_url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={symbol}&outputsize=full&apikey={api_key}"
-    response  = requests.get(request_url)
+    parsed_response = response(symbol)
 
-
-    if "Error Message" in response.text:
-        print("Sorry, symbol not found. Please try running the application again with a valid symbol.")
-        exit()
-
-    parsed_response = json.loads(response.text)
-
-        
     last_refreshed = parsed_response["Meta Data"]["3. Last Refreshed"]
             
 
@@ -86,24 +112,25 @@ if __name__ == "__main__":
 
     csv_file_path = os.path.join(os.path.dirname(__file__), "..", "data", "prices.csv")
 
+    write_to_csv(dates, csv_file_path)
 
-    csv_headers = ["timestamp", "open", "high", "low", "close", "volume"]
-    with open(csv_file_path, "w") as csv_file: # "w" means "open the file for writing"
-        writer = csv.DictWriter(csv_file, fieldnames=csv_headers)
-        writer.writeheader() # uses fieldnames set above
+    #csv_headers = ["timestamp", "open", "high", "low", "close", "volume"]
+    #with open(csv_file_path, "w") as csv_file: # "w" means "open the file for writing"
+        #writer = csv.DictWriter(csv_file, fieldnames=csv_headers)
+        #writer.writeheader() # uses fieldnames set above
 
-        for date in dates:
-            daily_prices = tsd[date]
+        #for date in dates:
+            #daily_prices = tsd[date]
 
-            writer.writerow({
+            #writer.writerow({
             
-            "timestamp": date,
-            "open": daily_prices["1. open"],
-            "high": daily_prices["2. high"],
-            "low": daily_prices["3. low"],
-            "close": daily_prices["4. close"],
-            "volume": daily_prices["5. volume"]
-            })
+            #"timestamp": date,
+            #"open": daily_prices["1. open"],
+            #"high": daily_prices["2. high"],
+            #"low": daily_prices["3. low"],
+            #"close": daily_prices["4. close"],
+            #"volume": daily_prices["5. volume"]
+            #})
         
     #recommendation
 
@@ -120,32 +147,28 @@ if __name__ == "__main__":
 
     now = datetime.datetime.now()
 
-    print("-------------------------")
+    print(divider())
     print(f"SELECTED SYMBOL: {symbol}")
-    print("-------------------------")
+    print(divider())
     print("REQUESTING STOCK MARKET DATA...")
     print("REQUEST AT: " + now.strftime("%Y-%m-%d %I:%M %p"))
-    print("-------------------------")
+    print(divider())
     print(f"LATEST DAY: {last_refreshed}")
     print(f"LATEST CLOSE: {to_usd(float(latest_closing))}")
     print(f"52 WEEK HIGH: {to_usd(float(year_high))}")
     print(f"52 WEEK LOW: {to_usd(float(year_low))}")
-    print("-------------------------")
+    print(divider())
     print(f"RECOMMENDATION: {rec}")
     print(f"RECOMMENDATION REASON: {reason}")
-    print("-------------------------")
+    print(divider())
     print(f"WRITING DATA TO CSV: {os.path.abspath(csv_file_path)}")
-    print("-------------------------")
-
-
+    print(divider())
 
     #The graphs taken from: https://plot.ly/python/plot-data-from-csv/
-
 
     while True:
 
         graphoption = input("Would you like to see the graph for your selected stock? Write 'Yes' or 'No'.")
-
         graphoption = graphoption.lower().title()
 
         if graphoption == "Yes":
@@ -158,8 +181,7 @@ if __name__ == "__main__":
             fig.update_layout(title= symbol + ' Prices over time (since the first trading day available)',
                             plot_bgcolor='rgb(230, 230,230)',
                             showlegend=True)
-            
-
+        
             fig.show()
             break
         elif graphoption == "No":
@@ -170,6 +192,6 @@ if __name__ == "__main__":
 
 
     print("HAPPY INVESTING!")
-    print("-------------------------")
+    print(divider())
 
 
