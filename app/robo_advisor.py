@@ -32,7 +32,7 @@ def divider():
 
 
 def response(ticker):
-    request_url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={ticker}&outputsize=full&apikey={api_key}"
+    request_url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={ticker}&apikey={api_key}"
     response  = requests.get(request_url)
     error(response)
     parsed_response = json.loads(response.text)
@@ -43,16 +43,11 @@ def error(response):
         print("Sorry, symbol not found. Please try running the application again with a valid symbol.")
         exit()    
 
-def write_to_csv(dates, csv_file_path):
-    csv_headers = ["timestamp", "open", "high", "low", "close", "volume"]
-    with open(csv_file_path, "w") as csv_file: # "w" means "open the file for writing"
-            writer = csv.DictWriter(csv_file, fieldnames=csv_headers)
-            writer.writeheader() # uses fieldnames set above
-
-            for date in dates:
-                daily_prices = tsd[date]
-
-                writer.writerow({
+def transform_response(parsed_response):
+    tsd = parsed_response["Time Series (Daily)"]
+    rows = []
+    for date, daily_prices in tsd.items():
+        row = {
                 
                 "timestamp": date,
                 "open": daily_prices["1. open"],
@@ -60,7 +55,20 @@ def write_to_csv(dates, csv_file_path):
                 "low": daily_prices["3. low"],
                 "close": daily_prices["4. close"],
                 "volume": daily_prices["5. volume"]
-                })
+                }
+        rows.append(row)
+    return rows
+
+
+def write_to_csv(rows, csv_file_path):
+    csv_headers = ["timestamp", "open", "high", "low", "close", "volume"]
+    with open(csv_file_path, "w") as csv_file: # "w" means "open the file for writing"
+        writer = csv.DictWriter(csv_file, fieldnames=csv_headers)
+        writer.writeheader() # uses fieldnames set above
+        for row in rows:
+            writer.writerow(row)
+    return True
+                    
    
 api_key = os.environ.get("ALPHAVANTAGE_API_KEY")
     
@@ -84,60 +92,25 @@ if __name__ == "__main__":
 
     last_refreshed = parsed_response["Meta Data"]["3. Last Refreshed"]
             
+    rows = transform_response(parsed_response)
 
-    tsd = parsed_response["Time Series (Daily)"]
-
-
-    dates = list(tsd.keys())
-
-    latest_day = dates[0] #maybe sort dates later
-
-
-    latest_closing = tsd[latest_day]["4. close"]
-
-    high_prices = []
-    low_prices =  []
-
-    for date in dates:
-        high_price = tsd[date]["2. high"]
-        high_prices.append(float((high_price)))
-        low_price = tsd[date]["3. low"]
-        low_prices.append(float((low_price)))
-
-    recent_high = max(high_prices[0:100])
-    year_high = max(high_prices[0:252])
-    recent_low = min(low_prices[0:100])
-    year_low = min(low_prices[0:252])
+    latest_closing = rows[0]["close"]
+    year_high = [row["high"] for row in rows] # list comprehension for mapping purposes!
+    year_low = [row["low"] for row in rows] # list comprehension for mapping purposes!
+    recent_high = max(year_high)
+    recent_low = min(year_low)
 
 
     csv_file_path = os.path.join(os.path.dirname(__file__), "..", "data", "prices.csv")
 
-    write_to_csv(dates, csv_file_path)
-
-    #csv_headers = ["timestamp", "open", "high", "low", "close", "volume"]
-    #with open(csv_file_path, "w") as csv_file: # "w" means "open the file for writing"
-        #writer = csv.DictWriter(csv_file, fieldnames=csv_headers)
-        #writer.writeheader() # uses fieldnames set above
-
-        #for date in dates:
-            #daily_prices = tsd[date]
-
-            #writer.writerow({
-            
-            #"timestamp": date,
-            #"open": daily_prices["1. open"],
-            #"high": daily_prices["2. high"],
-            #"low": daily_prices["3. low"],
-            #"close": daily_prices["4. close"],
-            #"volume": daily_prices["5. volume"]
-            #})
+    write_to_csv(rows, csv_file_path)
         
     #recommendation
 
     rec = str
     reason = str
 
-    if float(year_low)/float(latest_closing) >= 0.8:
+    if float(recent_low)/float(latest_closing) >= 0.8:
         rec = "Buy"
         reason = "The stock is most likely undervalued. This is because the latest close price is 20% or closer from the 52 week low." #provi
     else:
@@ -155,8 +128,8 @@ if __name__ == "__main__":
     print(divider())
     print(f"LATEST DAY: {last_refreshed}")
     print(f"LATEST CLOSE: {to_usd(float(latest_closing))}")
-    print(f"52 WEEK HIGH: {to_usd(float(year_high))}")
-    print(f"52 WEEK LOW: {to_usd(float(year_low))}")
+    print(f"RECENT HIGH: {to_usd(float(recent_high))}")
+    print(f"RECENT LOW: {to_usd(float(recent_low))}")
     print(divider())
     print(f"RECOMMENDATION: {rec}")
     print(f"RECOMMENDATION REASON: {reason}")
