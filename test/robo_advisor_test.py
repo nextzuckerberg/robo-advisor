@@ -2,9 +2,7 @@ import os
 import pytest
 
 
-
 from app.robo_advisor import to_usd, hasNumbers, response, write_to_csv, reccommendation, reasoning, divider
-
 
 
 def test_to_usd():
@@ -43,8 +41,6 @@ def test_response():
     assert "Meta Data" in parsed_response.keys()
     assert "Time Series (Daily)" in parsed_response.keys()
     assert parsed_response["Meta Data"]["2. Symbol"] == ticker
-
-
 
 def test_write_to_csv():
 

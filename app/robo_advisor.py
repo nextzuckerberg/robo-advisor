@@ -146,7 +146,6 @@ if __name__ == "__main__":
 
         graphoption = input("Would you like to see the graph for your selected stock? Write 'Yes' or 'No'.")
         graphoption = graphoption.lower().title()
-
         if graphoption == "Yes":
             print("You should see the graph in your browser. Thank you for using my program!")
             df = pd.read_csv(csv_file_path)
@@ -157,7 +156,6 @@ if __name__ == "__main__":
             fig.update_layout(title= symbol + ' Prices over time (since the first trading day available)',
                             plot_bgcolor='rgb(230, 230,230)',
                             showlegend=True)
-        
             fig.show()
             break
         elif graphoption == "No":
@@ -165,7 +163,6 @@ if __name__ == "__main__":
             break
         else:
             print("Please enter a valid id.")
-
 
     print("HAPPY INVESTING!")
     print(divider())
