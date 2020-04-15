@@ -2,10 +2,11 @@ import os
 import pytest
 
 
-from app.robo_advisor import to_usd, hasNumbers, response, write_to_csv, reccommendation, reasoning, divider
+from app.robo_advisor import to_usd, hasNumbers, response, write_to_csv, reccommendation, reasoning2, divider
 
 
 def test_to_usd():
+    #adapted from https://github.com/s2t2/robo-advisor-screencast/blob/v3-testing/test/advisor_test.py
     # it should apply USD formatting
     assert to_usd(4.50) == "$4.50"
 
@@ -31,6 +32,7 @@ def test_hasNumbers():
 
 
 def test_response():
+    #adapted from: https://github.com/s2t2/robo-advisor-screencast/blob/v3-testing/test/advisor_test.py
     #testing if function returns expected data in an expected format
 
     ticker = "MA"
@@ -43,7 +45,7 @@ def test_response():
     assert parsed_response["Meta Data"]["2. Symbol"] == ticker
 
 def test_write_to_csv():
-
+    #adapted from: https://github.com/s2t2/robo-advisor-screencast/blob/v3-testing/test/advisor_test.py
     # SETUP
 
     example_rows = [
@@ -70,16 +72,22 @@ def test_write_to_csv():
 
     assert result == True
     assert os.path.isfile(csv_filepath) == True
-    # TODO: consider also testing the file contents!
 
 
 def test_reccommendation():
+    #it should return "Buy" if the latest close price (second parameter) is 20% or closer from the recent low (first parameter). 
     assert reccommendation(10,11) == "Buy"
+
+    #it should return "Sell" if the latest close price (second parameter) is more more than 20% away from the recent low (first parameter). 
     assert reccommendation(10,30) == "Sell"
 
-def test_reasoning():
-    assert reasoning("Buy") == "The stock is most likely undervalued. This is because the latest close price is 20% or closer from the 52 week low."
-    assert reasoning("Sell") == "The stock is most likely overvalued. This is because the latest close price is more than 20% away from the 52 week low."
+def test_reasoning2():
+    #it should present the reasoning to buy if recommendation is "Buy"
+    assert reasoning2("Buy") == "The stock is most likely undervalued. This is because the latest close price is 20% or closer from the recent low."
+    
+    #it should present the reasoning to sell if recommendation is "Sell"
+    assert reasoning2("Sell") == "The stock is most likely overvalued. This is because the latest close price is more than 20% away from the recent low."
 
 def test_divider():
+    #it should return the divider/line
     assert divider() == "-------------------"

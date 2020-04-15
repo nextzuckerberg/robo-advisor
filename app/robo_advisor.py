@@ -135,7 +135,7 @@ def reccommendation(recent_low, latest_closing):
         rec = "Sell"
     return rec
 
-def reasoning(rec):
+def reasoning2(rec):
     """
     Returns reasoning based on reccommendation. To be used with conjuction with reccommendation function.
 
@@ -144,18 +144,18 @@ def reasoning(rec):
         
     Example: reccommendation(Buy)
 
-    Returns: The stock is most likely undervalued. This is because the latest close price is 20% or closer from the 52 week low.
+    Returns: The stock is most likely undervalued. This is because the latest close price is 20% or closer from the recent low.
     """
     reason = str
     if rec == "Buy":
-        reason = "The stock is most likely undervalued. This is because the latest close price is 20% or closer from the 52 week low."
+        reason = "The stock is most likely undervalued. This is because the latest close price is 20% or closer from the recent low."
     else:
-        reason = "The stock is most likely overvalued. This is because the latest close price is more than 20% away from the 52 week low."
+        reason = "The stock is most likely overvalued. This is because the latest close price is more than 20% away from the recent low."
     return reason
 
 api_key = os.environ.get("ALPHAVANTAGE_API_KEY")
     
-#input validation:
+#Input Collection and Validation:
 
 if __name__ == "__main__":
 
@@ -170,7 +170,6 @@ if __name__ == "__main__":
             break
 
     parsed_response = response(symbol)
-
 
     last_refreshed = parsed_response["Meta Data"]["3. Last Refreshed"]
             
@@ -190,6 +189,8 @@ if __name__ == "__main__":
         
     now = datetime.datetime.now()
 
+    #Display of the final product
+
     print(divider())
     print(f"SELECTED SYMBOL: {symbol}")
     print(divider())
@@ -202,11 +203,12 @@ if __name__ == "__main__":
     print(f"RECENT LOW: {to_usd(float(recent_low))}")
     print(divider())
     print(f"RECOMMENDATION: {reccommendation(recent_low,latest_closing)}")
-    print(f"RECOMMENDATION REASON: {reasoning(reccommendation)}")
+    print(f"RECOMMENDATION REASON: {reasoning2(reccommendation)}")
     print(divider())
     print(f"WRITING DATA TO CSV: {os.path.abspath(csv_file_path)}")
     print(divider())
 
+    #Additional option for users to create graphs
     #The graphs taken from: https://plot.ly/python/plot-data-from-csv/
 
     while True:

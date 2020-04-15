@@ -34,4 +34,19 @@ python app/robo_advisor.py
 No you should be able to enter a stock ticker. 
 The program will return the latest close price, 52 week high, 52 week low, and recommendation. Also, if you want to, the program will return the graph with the stock prices over time.
 
+## Testing
+Install ```pytest``` package (first time only):
+command line:
+```sh
+pip install pytest
+```
+
+Run tests:
+
+```sh
+pytest
+```
+
+## Help
+
 If you have any questions regarding the application, please contact me at stocks@wallstreet.edu

@@ -140,4 +140,4 @@ __pycache__
 .pytest_cache
 
 # ignore temporary files created during the testing process
-test/example_reports/temp_prices.csv
+test/example_reports/prices2.csv
