@@ -155,7 +155,7 @@ def reasoning(rec):
 
 api_key = os.environ.get("ALPHAVANTAGE_API_KEY")
     
-#input validation:
+#Input Collection and Validation:
 
 if __name__ == "__main__":
 
@@ -170,7 +170,6 @@ if __name__ == "__main__":
             break
 
     parsed_response = response(symbol)
-
 
     last_refreshed = parsed_response["Meta Data"]["3. Last Refreshed"]
             
@@ -190,6 +189,8 @@ if __name__ == "__main__":
         
     now = datetime.datetime.now()
 
+    #Display of the final product
+
     print(divider())
     print(f"SELECTED SYMBOL: {symbol}")
     print(divider())
@@ -207,6 +208,7 @@ if __name__ == "__main__":
     print(f"WRITING DATA TO CSV: {os.path.abspath(csv_file_path)}")
     print(divider())
 
+    #Additional option for users to create graphs
     #The graphs taken from: https://plot.ly/python/plot-data-from-csv/
 
     while True:
