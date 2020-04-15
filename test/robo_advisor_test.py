@@ -6,6 +6,7 @@ from app.robo_advisor import to_usd, hasNumbers, response, write_to_csv, reccomm
 
 
 def test_to_usd():
+    #adapted from https://github.com/s2t2/robo-advisor-screencast/blob/v3-testing/test/advisor_test.py
     # it should apply USD formatting
     assert to_usd(4.50) == "$4.50"
 
