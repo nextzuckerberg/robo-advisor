@@ -135,7 +135,7 @@ def reccommendation(recent_low, latest_closing):
         rec = "Sell"
     return rec
 
-def reasoning(rec):
+def reasoning2(rec):
     """
     Returns reasoning based on reccommendation. To be used with conjuction with reccommendation function.
 
@@ -144,13 +144,13 @@ def reasoning(rec):
         
     Example: reccommendation(Buy)
 
-    Returns: The stock is most likely undervalued. This is because the latest close price is 20% or closer from the 52 week low.
+    Returns: The stock is most likely undervalued. This is because the latest close price is 20% or closer from the recent low.
     """
     reason = str
     if rec == "Buy":
-        reason = "The stock is most likely undervalued. This is because the latest close price is 20% or closer from the 52 week low."
+        reason = "The stock is most likely undervalued. This is because the latest close price is 20% or closer from the recent low."
     else:
-        reason = "The stock is most likely overvalued. This is because the latest close price is more than 20% away from the 52 week low."
+        reason = "The stock is most likely overvalued. This is because the latest close price is more than 20% away from the recent low."
     return reason
 
 api_key = os.environ.get("ALPHAVANTAGE_API_KEY")
@@ -203,7 +203,7 @@ if __name__ == "__main__":
     print(f"RECENT LOW: {to_usd(float(recent_low))}")
     print(divider())
     print(f"RECOMMENDATION: {reccommendation(recent_low,latest_closing)}")
-    print(f"RECOMMENDATION REASON: {reasoning(reccommendation)}")
+    print(f"RECOMMENDATION REASON: {reasoning2(reccommendation)}")
     print(divider())
     print(f"WRITING DATA TO CSV: {os.path.abspath(csv_file_path)}")
     print(divider())

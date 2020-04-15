@@ -7,8 +7,6 @@
 
 # ... except this gitignore file
 
-
-
 *
 */
 !.gitignore

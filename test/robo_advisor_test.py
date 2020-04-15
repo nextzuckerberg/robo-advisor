@@ -2,7 +2,7 @@ import os
 import pytest
 
 
-from app.robo_advisor import to_usd, hasNumbers, response, write_to_csv, reccommendation, reasoning, divider
+from app.robo_advisor import to_usd, hasNumbers, response, write_to_csv, reccommendation, reasoning2, divider
 
 
 def test_to_usd():
@@ -80,12 +80,12 @@ def test_reccommendation():
     #it should return "Sell" if the latest close price (second parameter) is more more than 20% away from the recent low (first parameter). 
     assert reccommendation(10,30) == "Sell"
 
-def test_reasoning():
+def test_reasoning2():
     #it should present the reasoning to buy if recommendation is "Buy"
-    assert reasoning("Buy") == "The stock is most likely undervalued. This is because the latest close price is 20% or closer from the recent low."
+    assert reasoning2("Buy") == "The stock is most likely undervalued. This is because the latest close price is 20% or closer from the recent low."
     
     #it should present the reasoning to sell if recommendation is "Sell"
-    assert reasoning("Sell") == "The stock is most likely overvalued. This is because the latest close price is more than 20% away from the recent low."
+    assert reasoning2("Sell") == "The stock is most likely overvalued. This is because the latest close price is more than 20% away from the recent low."
 
 def test_divider():
     #it should return the divider/line
